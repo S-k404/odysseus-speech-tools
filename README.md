@@ -1,3 +1,12 @@
+<!-- datasheet:banner -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+    <img src=".github/assets/banner-light.svg" alt="Odysseus Speech Tools: A local, OpenAI-compatible speech engine in Docker: Kokoro-82M text-to-speech and Faster-Whisper transcription, plus audiobook narrators." width="100%">
+  </picture>
+</p>
+<!-- /datasheet:banner -->
+
 # Speaches Audio Engine (Kokoro-82M TTS + Faster-Whisper STT) for Odysseus
 
 A unified, local, OpenAI-compatible audio engine running in Docker. Powered by:
@@ -7,6 +16,25 @@ A unified, local, OpenAI-compatible audio engine running in Docker. Powered by:
 - **Document Narrator (`narrator.py`)**: Universal document reader capable of reading PDFs, Markdown, EPUBs, and plain text files aloud to MP3 audiobooks with live macOS playback.
 
 ---
+
+<!-- datasheet:figure -->
+## At a glance
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/diagram-dark.svg">
+    <img src=".github/assets/diagram-light.svg" alt="Block diagram: one speech engine, three front doors" width="100%">
+  </picture>
+</p>
+
+| Characteristic | Detail |
+| --- | --- |
+| **Text-to-speech** | Kokoro-82M (ONNX), studio-quality neural voices with natural prosody |
+| **Speech-to-text** | Faster-Whisper (`Systran/faster-whisper-small`), local and memory-efficient |
+| **API** | OpenAI-compatible, served by the Speaches container at `http://localhost:8000/v1` |
+| **Tools** | `narrator.py` reads PDF, Markdown, EPUB and text aloud to MP3; `pdf2epub_tts.py` builds chaptered M4B audiobooks |
+| **Verification** | `verify_all.py` and `test_audio_engine.py` check the engine end to end |
+<!-- /datasheet:figure -->
 
 ## 1. Quick Start & Docker Compose
 
@@ -113,7 +141,7 @@ python3 ~/Documents/pdf2epub_tts.py "book.pdf" \
   --concurrency 4 \
   --play
 ```
-See [PDF2EPUB_TTS_README.md](file://~/Documents/Docker/Speaches/PDF2EPUB_TTS_README.md) for full voice options and CLI reference.
+See [PDF2EPUB_TTS_README.md](PDF2EPUB_TTS_README.md) for full voice options and CLI reference.
 
 ---
 
@@ -129,3 +157,7 @@ This tests:
 3. Direct Faster-Whisper speech transcription.
 4. Document narration across PDF, Markdown, EPUB, and TXT.
 5. Odysseus DB `ModelEndpoint` and `settings.json` configuration.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
