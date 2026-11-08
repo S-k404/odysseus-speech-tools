@@ -1,0 +1,16 @@
+# Python & Virtual Environments
+.env
+.venv/
+__pycache__/
+*.pyc
+*/.venv/
+*/__pycache__/
+
+# Logs & Diagnostics
+*.log
+*.log.*
+*.prev
+*.prev.*
+
+# macOS
+.DS_Store

@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  speaches:
+    image: ghcr.io/speaches-ai/speaches:latest-cpu
+    container_name: speaches
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - speaches_cache:/home/ubuntu/.cache/huggingface/hub
+      - ./model_aliases.json:/home/ubuntu/speaches/model_aliases.json:ro
+      - ./chat_router.py:/home/ubuntu/speaches/src/speaches/routers/chat.py:ro
+    environment:
+      - WHISPER_MODEL=Systran/faster-whisper-small
+      - SPEACHES_TTS_MODEL=speaches-ai/Kokoro-82M-v1.0-ONNX
+      - SPEACHES_TTS_VOICE=af_heart
+      - CHAT_COMPLETION_BASE_URL=http://host.docker.internal:12434/v1
+      - CHAT_COMPLETION_MODEL=huggingface.co/unsloth/qwen3.6-35b-a3b-gguf:UD-Q3_K_S
+      - WHISPER__INFERENCE_DEVICE=cpu
+      - WHISPER__COMPUTE_TYPE=int8
+      - LOG_LEVEL=info
+      - ENABLE_UI=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - odysseus-network
+
+volumes:
+  speaches_cache:
+
+networks:
+  odysseus-network:
+    name: odysseus_default
+    external: true

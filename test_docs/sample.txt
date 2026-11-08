@@ -1,0 +1,5 @@
+The Odyssey of Local Artificial Intelligence.
+
+Local machine intelligence represents a critical paradigm shift for privacy, speed, and autonomy.
+By running Kokoro-82M and Faster-Whisper on local hardware, latency is minimized and data never leaves the workstation.
+Document narration bridges the gap between text reading and audio listening, allowing users to listen to long documents effortlessly.
