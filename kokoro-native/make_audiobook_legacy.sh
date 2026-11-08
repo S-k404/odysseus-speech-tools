@@ -31,7 +31,7 @@ done
 KOKORO_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 BOOKS_DIR="${BOOKS_DIR:-$HOME/Documents/Books}"
 AUDIO_DIR="${AUDIO_DIR:-$HOME/Documents/AudioBook}"
-CONVERTER="~/Documents/Docker/Speaches/pdf2epub_tts.py"
+CONVERTER="$HOME/Documents/Docker/Speaches/pdf2epub_tts.py"
 KOKORO_VENV="$KOKORO_DIR/.venv"
 PYTHON="$KOKORO_VENV/bin/python"
 KOKORO_PORT=8001

@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 import urllib.request
 import urllib.error
 
-ODYSSEUS_DIR = "~/Documents/Docker/Odysseus"
+ODYSSEUS_DIR = os.path.expanduser("~/Documents/Docker/Odysseus")
 DB_PATH = os.path.join(ODYSSEUS_DIR, "data", "app.db")
 SETTINGS_PATH = os.path.join(ODYSSEUS_DIR, "data", "settings.json")
 

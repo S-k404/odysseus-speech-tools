@@ -24,7 +24,7 @@ import urllib.parse
 from pathlib import Path
 
 BASE_URL = os.getenv("SPEACHES_BASE_URL", "http://localhost:8000/v1")
-ODYSSEUS_DIR = "~/Documents/Docker/Odysseus"
+ODYSSEUS_DIR = os.path.expanduser("~/Documents/Docker/Odysseus")
 DB_PATH = os.path.join(ODYSSEUS_DIR, "data", "app.db")
 SETTINGS_PATH = os.path.join(ODYSSEUS_DIR, "data", "settings.json")
 

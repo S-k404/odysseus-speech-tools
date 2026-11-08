@@ -51,7 +51,7 @@ except ImportError:
     try:
         import fitz as pymupdf
     except ImportError:
-        venv_py = Path("~/Documents/Docker/Odysseus/.venv/bin/python")
+        venv_py = (Path.home() / "Documents/Docker/Odysseus/.venv/bin/python")
         if venv_py.exists() and sys.executable != str(venv_py):
             os.execv(str(venv_py), [str(venv_py)] + sys.argv)
         sys.exit("Missing dependency. Run:  pip install pymupdf ebooklib")
@@ -864,8 +864,8 @@ def parse_pages(spec: str | None, n: int) -> tuple[int, int]:
     return a - 1, b - 1
 
 
-DEFAULT_BOOKS_DIR = Path(os.getenv("BOOKS_DIR", "~/Documents/Books"))
-DEFAULT_AUDIO_DIR = Path(os.getenv("AUDIO_DIR", "~/Documents/AudioBook"))
+DEFAULT_BOOKS_DIR = Path(os.getenv("BOOKS_DIR", os.path.expanduser("~/Documents/Books")))
+DEFAULT_AUDIO_DIR = Path(os.getenv("AUDIO_DIR", os.path.expanduser("~/Documents/AudioBook")))
 
 
 def list_available_books(books_dir: Path, audio_dir: Path):

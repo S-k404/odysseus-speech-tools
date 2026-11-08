@@ -27,8 +27,8 @@ import urllib.request
 import urllib.parse
 from pathlib import Path
 
-ODYSSEUS_DIR = Path("~/Documents/Docker/Odysseus")
-SPEACHES_DIR = Path("~/Documents/Docker/Speaches")
+ODYSSEUS_DIR = (Path.home() / "Documents/Docker/Odysseus")
+SPEACHES_DIR = (Path.home() / "Documents/Docker/Speaches")
 SPEACHES_HOST = "http://localhost:8000/v1"
 DB_PATH = ODYSSEUS_DIR / "data" / "app.db"
 SETTINGS_PATH = ODYSSEUS_DIR / "data" / "settings.json"
