@@ -68,10 +68,8 @@ if [[ ! -d "$VENV_DIR" ]]; then
     exit 1
 fi
 
-if [[ ! -f "$MODEL_FILE" ]] || [[ ! -f "$VOICES_FILE" ]]; then
-    echo "ERROR: Model files missing. Run './start.sh --setup' first."
-    exit 1
-fi
+# server.py runs the PyTorch `kokoro` package (its model comes from the Hugging Face cache);
+# the .onnx files are only for the ONNX fallback, so they are not required to start.
 
 echo "==> Starting Kokoro Native TTS server on port 8001…"
 echo "    Health: http://localhost:8001/health"
