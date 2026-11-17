@@ -56,7 +56,7 @@ Outputs are automatically saved to: `~/Documents/AudioBook/<BookTitle>.m4b`.
 If you want the native GPU server running continuously on port 8001:
 
 ```bash
-cd ~/Documents/Docker/Speaches/kokoro-native
+cd kokoro-native
 ./start.sh
 ```
 

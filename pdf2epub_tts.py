@@ -51,7 +51,8 @@ except ImportError:
     try:
         import fitz as pymupdf
     except ImportError:
-        venv_py = (Path.home() / "Documents/Docker/Odysseus/.venv/bin/python")
+        # the Odysseus checkout (ODYSSEUS_DIR, default: a sibling folder named Odysseus) has the PDF libraries
+        venv_py = Path(os.environ.get("ODYSSEUS_DIR") or Path(__file__).resolve().parent.parent / "Odysseus").expanduser() / ".venv/bin/python"
         if venv_py.exists() and sys.executable != str(venv_py):
             os.execv(str(venv_py), [str(venv_py)] + sys.argv)
         sys.exit("Missing dependency. Run:  pip install pymupdf ebooklib")
@@ -715,7 +716,7 @@ def synthesize_audiobook(
     print(f"   Voice: {voice} | Speed: {speed}x | Model: {model}")
     print(f"   Sections: {len(sections)} | Total Words: ~{total_words:,}")
 
-    out_ext = out_path.suffix.lower() if out_path.suffix else ".m4u"
+    out_ext = out_path.suffix.lower() if out_path.suffix else ".m4b"
     is_mp4_container = out_ext in (".m4u", ".m4b", ".m4a")
 
     with tempfile.TemporaryDirectory(prefix="pdf2epub_audio_") as td:
@@ -896,9 +897,9 @@ def list_available_books(books_dir: Path, audio_dir: Path):
         print(f"{i:>3}. {display_name:<65} {size_mb:>7.1f}MB  {audio_status}")
     print("-" * 95)
     print("Commands:")
-    print("  python3 ~/Documents/pdf2epub_tts.py <number or title>")
-    print("  e.g.: python3 ~/Documents/pdf2epub_tts.py 1")
-    print("        python3 ~/Documents/pdf2epub_tts.py \"GATE\" --play\n")
+    print("  python3 pdf2epub_tts.py <number or title>")
+    print("  e.g.: python3 pdf2epub_tts.py 1")
+    print("        python3 pdf2epub_tts.py \"GATE\" --play\n")
 
 
 def resolve_book_input(target: str | None, books_dir: Path) -> Path | None:
@@ -946,7 +947,7 @@ def main():
     ap.add_argument("pdf", nargs="?", default=None, help="Path, name, or index number of PDF/EPUB book in ~/Documents/Books")
     ap.add_argument("-b", "--book", help="Pick book by index number or search title from ~/Documents/Books")
     ap.add_argument("--list", "--list-books", dest="list_books", action="store_true", help="List all available books in ~/Documents/Books")
-    ap.add_argument("-o", "--output", type=Path, help="output .m4u, .m4b, .mp3, or destination directory (default: ~/Documents/AudioBook)")
+    ap.add_argument("-o", "--output", type=Path, help="output .m4b, .m4u, .mp3, or destination directory (default: ~/Documents/AudioBook)")
     ap.add_argument("--books-dir", type=Path, default=DEFAULT_BOOKS_DIR, help="Books directory (default: ~/Documents/Books)")
     ap.add_argument("--audio-dir", type=Path, default=DEFAULT_AUDIO_DIR, help="AudioBook directory (default: ~/Documents/AudioBook)")
     ap.add_argument("--title")
@@ -974,7 +975,7 @@ def main():
     ap.add_argument("--force", action="store_true", help="Re-convert books even if an audiobook already exists")
     ap.add_argument("--audio", action="store_true", help="synthesize audiobook (.m4u/.m4b/.mp3) with Kokoro TTS")
     ap.add_argument("--audio-format", choices=["m4u", "m4b", "m4a", "mp3"], default=None,
-                    help="audio format if not specified in -o (default: m4u)")
+                    help="audio format if not specified in -o (default: m4b)")
     ap.add_argument("--voice", default="af_sky",
                     help="Kokoro voice (af_sky, af_heart, af_bella, am_adam, bf_emma, bm_george; default: af_sky)")
     ap.add_argument("--speed", type=float, default=1.0, help="speech rate multiplier (default: 1.0)")
@@ -1001,7 +1002,7 @@ def main():
             print(f"No PDF/EPUB books found in {args.books_dir}")
             return
         print(f"\n🚀 Batch mode: processing {len(books)} books from {args.books_dir} -> {args.audio_dir}")
-        fmt = args.audio_format or "m4u"
+        fmt = args.audio_format or "m4b"
         for i, b in enumerate(books, 1):
             clean_stem = re.sub(r"\s*--\s*[a-f0-9]{32}\s*--\s*Anna’s Archive.*", "", b.stem, flags=re.I)
             clean_stem = re.sub(r'[^\w\s\-_.,()\'"]', '', clean_stem).strip() or b.stem
@@ -1079,10 +1080,10 @@ def convert_single_book(book_path: Path, args):
 
     args.audio_dir.mkdir(parents=True, exist_ok=True)
     out_arg = args.output
-    fmt = args.audio_format or "m4u"
+    fmt = args.audio_format or "m4b"
 
     if out_arg is None:
-        # Default destination: ~/Documents/AudioBook/<clean_stem>.m4u
+        # Default destination: ~/Documents/AudioBook/<clean_stem>.m4b
         audio_dest = (args.audio_dir / clean_stem).with_suffix(f".{fmt}")
         is_audio_target = True
         build_audio = True

@@ -29,7 +29,7 @@ import json
 import shutil
 from pathlib import Path
 
-ODYSSEUS_DIR = (Path.home() / "Documents/Docker/Odysseus")
+ODYSSEUS_DIR = Path(os.environ.get("ODYSSEUS_DIR") or Path(__file__).resolve().parent.parent / "Odysseus").expanduser()
 ENV_PATH = ODYSSEUS_DIR / ".env"
 TTS_SERVICE_PATH = ODYSSEUS_DIR / "services" / "tts" / "tts_service.py"
 STT_SERVICE_PATH = ODYSSEUS_DIR / "services" / "stt" / "stt_service.py"

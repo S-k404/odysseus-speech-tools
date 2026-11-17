@@ -58,7 +58,7 @@ Open your browser to: **[http://localhost:8000/](http://localhost:8000/)**
 Run from your terminal to read any `.pdf`, `.md`, or `.txt` document:
 
 ```bash
-cd ~/Documents/Docker/Speaches
+cd /path/to/odysseus-speech-tools
 
 # 1. Narrate a PDF to an MP3 file
 ./read_doc.py /path/to/document.pdf --output my_narration.mp3 --voice af_sky
@@ -69,7 +69,7 @@ cd ~/Documents/Docker/Speaches
 # 3. Use another voice (e.g., British female voice 'bf_emma')
 ./read_doc.py test_docs/sample.pdf --voice bf_emma --play
 ```
-*(Note: `read_doc.py` is also available directly inside `~/Documents/Docker/Odysseus/read_doc.py`)*
+*(Note: `read_doc.py` is also available directly inside your Odysseus checkout.)*
 
 ---
 
@@ -77,7 +77,7 @@ cd ~/Documents/Docker/Speaches
 For advanced multi-format narration (including **EPUB** books and page range selection):
 
 ```bash
-cd ~/Documents/Docker/Speaches
+cd /path/to/odysseus-speech-tools
 
 # Read specific pages of a PDF
 ./narrator.py document.pdf --start-page 1 --end-page 10 -o chapter1.mp3
@@ -92,7 +92,7 @@ cd ~/Documents/Docker/Speaches
 To check logs, stop, or restart Speaches:
 
 ```bash
-cd ~/Documents/Docker/Speaches
+cd /path/to/odysseus-speech-tools
 
 # View real-time logs
 docker logs -f speaches
@@ -111,6 +111,6 @@ docker compose up -d
 Run the 10-point verification test at any time to confirm all systems are operating:
 
 ```bash
-cd ~/Documents/Docker/Speaches
+cd /path/to/odysseus-speech-tools
 python3 verify_all.py
 ```

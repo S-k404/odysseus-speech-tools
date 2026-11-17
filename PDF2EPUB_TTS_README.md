@@ -1,20 +1,20 @@
-# PDF to Chaptered M4U Audiobook & EPUB Converter (`pdf2epub_tts.py`)
+# PDF to Chaptered M4B Audiobook & EPUB Converter (`pdf2epub_tts.py`)
 
-A high-performance CLI tool that transforms raw PDFs into clean, beautifully chaptered **`.m4u` / `.m4b` / `.mp3` audiobooks** powered by your local **Kokoro-82M TTS** running in Docker, as well as clean **EPUB** eBooks.
+A high-performance CLI tool that transforms raw PDFs into clean, beautifully chaptered **`.m4b` / `.m4u` / `.mp3` audiobooks** powered by your local **Kokoro-82M TTS** running in Docker, as well as clean **EPUB** eBooks.
 
 ---
 
 ## Features
 
 - **Local Docker Kokoro TTS Integration**: Connects directly to the Speaches Docker container (`http://localhost:8000/v1`) using the OpenAI-compatible speech endpoint.
-- **True Chaptered Audiobooks (`.m4u` / `.m4b`)**: Automatically generates an `FFMETADATA1` chapter track and embeds iPod/M4B chapter atoms (`chpl`) using `ffmpeg`. Works seamlessly in Apple Books, VLC, and BookPlayer with chapter titles, jump points, and progress tracking.
+- **True Chaptered Audiobooks (`.m4b` / `.m4u`)**: Automatically generates an `FFMETADATA1` chapter track and embeds iPod/M4B chapter atoms (`chpl`) using `ffmpeg`. Works seamlessly in Apple Books, VLC, and BookPlayer with chapter titles, jump points, and progress tracking.
 - **Intelligent Text & Layout Cleaning**:
   - Automatically detects and removes repeating running headers, footers, and page numbers.
   - Reassembles words hyphenated across line breaks and joins hard-wrapped lines into natural flowing paragraphs.
   - Cleans ligatures, soft hyphens, zero-width characters, drop caps, bullet symbols, and dot-leader table of contents lines.
   - Optionally strips URLs, footnote text, and citation brackets (`[1]`, `[2, 3]`).
 - **Parallel Synthesis**: Synthesizes chapter audio chunks concurrently using multi-threading (default: 4 workers) for maximum throughput.
-- **Automatic Environment Detection**: If run under global Python without required packages, it automatically re-executes itself inside the Odysseus virtual environment (`~/Documents/Docker/Odysseus/.venv`).
+- **Automatic Environment Detection**: If run under global Python without required packages, it automatically re-executes itself inside the Odysseus virtual environment (`.venv` in your Odysseus checkout: the `ODYSSEUS_DIR` environment variable, or a sibling folder named `Odysseus`).
 
 ---
 
@@ -33,7 +33,7 @@ A high-performance CLI tool that transforms raw PDFs into clean, beautifully cha
 ## Configured Directories
 
 - **Books Library**: `~/Documents/Books` (contains your PDFs and EPUBs)
-- **AudioBook Destination**: `~/Documents/AudioBook` (where all `.m4u` files are created by default)
+- **AudioBook Destination**: `~/Documents/AudioBook` (where `.m4b` audiobooks are created by default; change both folders with `BOOKS_DIR` / `AUDIO_DIR` or `--books-dir` / `--audio-dir`)
 
 ---
 
@@ -42,18 +42,18 @@ A high-performance CLI tool that transforms raw PDFs into clean, beautifully cha
 ### 1. View Your Library & Audio Status
 Running the script with no arguments or `--list` shows all books, file sizes, and whether the audiobook is already made:
 ```bash
-python3 ~/Documents/pdf2epub_tts.py --list
+python3 pdf2epub_tts.py --list
 ```
 Output:
 ```text
 📚 Available Books in ~/Documents/Books:
-  #  Title / Filename                                                       Size  Audio (.m4u)
+  #  Title / Filename                                                       Size  Audio Status
 -----------------------------------------------------------------------------------------------
-  1. __Comprehensive Guide to Electronics and Communication Enginee...     1.2MB  —
-  2. _OceanofPDF.com_Python_Illustrated_-_Maaike_van_Putten.epub          28.1MB  —
-  3. Additive_Manufacturing_Essentials_-_WEB.pdf                          19.3MB  —
+  1. Example Handbook of Electronics.pdf                                  1.2MB  —
+  2. Learning Python Illustrated.epub                                    28.1MB  —
+  3. Additive Manufacturing Essentials.pdf                               19.3MB  —
   ...
-  6. Finding 1_ GATE 2026 Results and Scorecards.pdf                       2.0MB  ✓ Ready
+  6. Exam Results and Scorecards.pdf                                      2.0MB  ✓ Ready
 ```
 
 ---
@@ -63,20 +63,20 @@ You don't need to specify output paths or full file paths. The script automatica
 
 ```bash
 # Convert by book number from the list
-python3 ~/Documents/pdf2epub_tts.py 1
+python3 pdf2epub_tts.py 1
 
 # Convert by title search
-python3 ~/Documents/pdf2epub_tts.py "Python"
+python3 pdf2epub_tts.py "Python"
 
 # Convert and immediately play aloud via macOS afplay
-python3 ~/Documents/pdf2epub_tts.py "GATE" --play
+python3 pdf2epub_tts.py "GATE" --play
 
 ---
 
 ### 3. Batch Convert All Pending Books
 To convert all books in `~/Documents/Books` sequentially into `~/Documents/AudioBook` (automatically skipping books that are already converted):
 ```bash
-python3 ~/Documents/pdf2epub_tts.py --all
+python3 pdf2epub_tts.py --all
 ```
 * Use `--force` to re-convert already synthesized audiobooks.
 * Use `--voice <voice>` to select the voice for the entire batch.
@@ -84,18 +84,18 @@ python3 ~/Documents/pdf2epub_tts.py --all
 
 ---
 
-### 3. Test Run on Specific Pages
+### 4. Test Run on Specific Pages
 Great for previewing voice and speed:
 ```bash
-python3 ~/Documents/pdf2epub_tts.py "GATE" --pages 1-3 --play
+python3 pdf2epub_tts.py "GATE" --pages 1-3 --play
 ```
 
 ---
 
-### 4. Recommended Production Command for Books & Papers
+### 5. Recommended Production Command for Books & Papers
 Cleans front matter, footnote text, citations, and synthesizes at 4x concurrency:
 ```bash
-python3 ~/Documents/pdf2epub_tts.py "book.pdf" \
+python3 pdf2epub_tts.py "book.pdf" \
   --skip-front \
   --strip-citations \
   --drop-footnotes \
@@ -106,11 +106,11 @@ python3 ~/Documents/pdf2epub_tts.py "book.pdf" \
 
 ---
 
-### 4. Create Both EPUB and M4U Audiobook Simultaneously
+### 6. Create Both EPUB and M4B Audiobook Simultaneously
 ```bash
-python3 ~/Documents/pdf2epub_tts.py "book.pdf" -o "book.m4u" --epub
+python3 pdf2epub_tts.py "book.pdf" -o "book.m4b" --epub
 ```
-Generates `book.m4u` (chaptered audio) and `book.epub` (clean ebook) side-by-side.
+Generates `book.m4b` (chaptered audio) and `book.epub` (clean ebook) side-by-side.
 
 ---
 
@@ -129,7 +129,7 @@ Pass any voice name with `--voice <name>`:
 
 Example:
 ```bash
-python3 ~/Documents/pdf2epub_tts.py "book.pdf" -o "book.m4u" --voice bm_george --speed 1.1
+python3 pdf2epub_tts.py "book.pdf" -o "book.m4b" --voice bm_george --speed 1.1
 ```
 
 ---
@@ -154,7 +154,7 @@ usage: pdf2epub_tts.py [-h] [-o OUTPUT] [--title TITLE] [--author AUTHOR]
 | Flag | Description |
 | :--- | :--- |
 | `pdf` | Path to the input PDF file. |
-| `-o, --output` | Output path (`.m4u`, `.m4b`, `.mp3`, or `.epub`). |
+| `-o, --output` | Output path (`.m4b`, `.m4u`, `.mp3`, or `.epub`). |
 | `--pages` | Page range to convert (e.g. `1-10` or `15-150`). |
 | `--title` / `--author` | Metadata overrides (defaults to PDF metadata or filename). |
 | `--epub` | Also generate `.epub` when synthesizing audio. |
@@ -177,7 +177,7 @@ usage: pdf2epub_tts.py [-h] [-o OUTPUT] [--title TITLE] [--author AUTHOR]
 | `--speed` | Speech speed multiplier (e.g. `1.0`, `1.15`; default: `1.0`). |
 | `--endpoint` | Kokoro/Speaches API endpoint (default: `http://localhost:8000/v1`). |
 | `--concurrency` | Number of simultaneous HTTP synthesis workers (default: `4`). |
-| `--keep-chapters` | Retains individual per-chapter `.mp3` files alongside the master `.m4u`. |
+| `--keep-chapters` | Retains individual per-chapter `.mp3` files alongside the master `.m4b`. |
 | `--play` | Automatically plays the finished file using macOS `afplay`. |
 
 ---
@@ -223,6 +223,6 @@ usage: pdf2epub_tts.py [-h] [-o OUTPUT] [--title TITLE] [--author AUTHOR]
                                             │      FFmpeg        │
                                             │ - Concat Chunks    │
                                             │ - Inject Metadata  │
-                                            │ - Write .M4U / .M4B│
+                                            │ - Write .M4B / .M4U│
                                             └────────────────────┘
 ```

@@ -15,7 +15,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-ODYSSEUS_DIR = (Path.home() / "Documents/Docker/Odysseus")
+ODYSSEUS_DIR = Path(os.environ.get("ODYSSEUS_DIR") or Path(__file__).resolve().parent.parent / "Odysseus").expanduser()
 DB_PATH = ODYSSEUS_DIR / "data" / "app.db"
 PRESETS_PATH = ODYSSEUS_DIR / "data" / "presets.json"
 PROMPTS_DIR = ODYSSEUS_DIR / "data" / "prompts"
