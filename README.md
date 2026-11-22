@@ -211,6 +211,6 @@ MIT. See [LICENSE](LICENSE).
 <p align="center">
   <a href="https://github.com/S-k404/odysseus-notion-skill">&larr; U6 odysseus-notion-skill</a> &middot;
   <a href="https://github.com/S-k404/S-k404">SK-404 index</a> &middot;
-  <a href="https://github.com/S-k404/odysseus-image-tools">U8 odysseus-image-tools &rarr;</a>
+  <a href="https://github.com/S-k404/grab">U9 grab &rarr;</a>
 </p>
 <!-- /datasheet:footer -->
