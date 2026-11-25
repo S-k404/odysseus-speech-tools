@@ -11,9 +11,16 @@ import sys
 import os
 import re
 import argparse
+import json
 import subprocess
-import requests
+import urllib.error
+import urllib.request
 from pathlib import Path
+
+try:
+    import requests
+except ImportError:
+    requests = None
 
 # PDF parsing with graceful fallbacks
 try:
@@ -110,21 +117,32 @@ def synthesize(chunks, voice="af_sky", model="hexgrad/Kokoro-82M", output="narra
         for idx, chunk in enumerate(chunks, 1):
             print(f"  -> Processing section {idx}/{len(chunks)}...")
             try:
-                res = requests.post(
-                    SPEACHES_ENDPOINT,
-                    headers={"Content-Type": "application/json"},
-                    json={
-                        "model": effective_model,
-                        "input": chunk,
-                        "voice": voice,
-                        "response_format": "mp3"
-                    },
-                    timeout=60
-                )
-                if res.status_code == 200:
-                    f_out.write(res.content)
+                payload = {
+                    "model": effective_model,
+                    "input": chunk,
+                    "voice": voice,
+                    "response_format": "mp3",
+                }
+                if requests is not None:
+                    res = requests.post(
+                        SPEACHES_ENDPOINT,
+                        headers={"Content-Type": "application/json"},
+                        json=payload,
+                        timeout=60,
+                    )
+                    if res.status_code == 200:
+                        f_out.write(res.content)
+                    else:
+                        print(f"Error on section {idx}: {res.status_code} - {res.text}")
                 else:
-                    print(f"Error on section {idx}: {res.status_code} - {res.text}")
+                    req = urllib.request.Request(
+                        SPEACHES_ENDPOINT,
+                        data=json.dumps(payload).encode("utf-8"),
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with urllib.request.urlopen(req, timeout=60) as resp:
+                        f_out.write(resp.read())
             except Exception as e:
                 print(f"Connection error on section {idx}: {e}")
 
@@ -132,17 +150,11 @@ def synthesize(chunks, voice="af_sky", model="hexgrad/Kokoro-82M", output="narra
 
 
 def play_audio(audio_path: str):
-    """Plays generated audio aloud on macOS."""
-    if sys.platform == "darwin":
-        print(f"Playing narration aloud: {audio_path}")
-        try:
-            subprocess.run(["afplay", audio_path], check=True)
-        except KeyboardInterrupt:
-            print("\nPlayback stopped.")
-        except Exception as e:
-            print(f"Playback error: {e}")
-    else:
-        print(f"Native playback only on macOS (platform={sys.platform}). Audio saved to {audio_path}")
+    """Plays generated audio aloud using native OS playback."""
+    from audio_player import play_audio_file
+
+    print(f"Playing narration aloud: {audio_path}")
+    play_audio_file(audio_path)
 
 
 if __name__ == "__main__":

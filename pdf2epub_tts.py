@@ -52,8 +52,12 @@ except ImportError:
         import fitz as pymupdf
     except ImportError:
         # the Odysseus checkout (ODYSSEUS_DIR, default: a sibling folder named Odysseus) has the PDF libraries
-        venv_py = Path(os.environ.get("ODYSSEUS_DIR") or Path(__file__).resolve().parent.parent / "Odysseus").expanduser() / ".venv/bin/python"
-        if venv_py.exists() and sys.executable != str(venv_py):
+        odysseus_root = Path(os.environ.get("ODYSSEUS_DIR") or Path(__file__).resolve().parent.parent / "Odysseus").expanduser()
+        venv_py = odysseus_root / ".venv" / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
+        if venv_py.exists() and Path(sys.executable).resolve() != venv_py.resolve():
+            if sys.platform == "win32":
+                import subprocess as _sp
+                raise SystemExit(_sp.call([str(venv_py)] + sys.argv))
             os.execv(str(venv_py), [str(venv_py)] + sys.argv)
         sys.exit("Missing dependency. Run:  pip install pymupdf ebooklib")
 
@@ -832,17 +836,11 @@ def synthesize_audiobook(
 
 
 def play_audio(audio_path: Path):
-    """Plays generated audio aloud on macOS."""
-    if sys.platform == "darwin":
-        print(f"\n🔊 Playing audio aloud: {audio_path}")
-        try:
-            subprocess.run(["afplay", str(audio_path)], check=True)
-        except KeyboardInterrupt:
-            print("\nPlayback stopped.")
-        except Exception as e:
-            print(f"Playback error: {e}")
-    else:
-        print(f"Native playback only on macOS (platform={sys.platform}). File saved to {audio_path}")
+    """Plays generated audio aloud using native OS playback."""
+    from audio_player import play_audio_file
+
+    print(f"\nPlaying audio aloud: {audio_path}")
+    play_audio_file(audio_path)
 
 
 # --------------------------------------------------------------------------

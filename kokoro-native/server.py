@@ -129,9 +129,12 @@ async def load_model() -> None:
     if torch.backends.mps.is_available():
         _device = "mps"
         log.info("🚀 Apple Metal GPU (MPS) is AVAILABLE — loading Kokoro directly onto GPU...")
+    elif torch.cuda.is_available():
+        _device = "cuda"
+        log.info("🚀 CUDA GPU is AVAILABLE — loading Kokoro onto GPU...")
     else:
         _device = "cpu"
-        log.warning("⚠️  Metal MPS not available — falling back to CPU")
+        log.info("⚠️  GPU accelerator not available — running Kokoro on CPU")
 
     from kokoro import KPipeline
     _pipeline = KPipeline(lang_code="a", device=_device)
@@ -255,9 +258,10 @@ def _synthesize_stream(
 
 @app.get("/health")
 async def health() -> JSONResponse:
+    backend = {"mps": "pytorch-metal-mps", "cuda": "pytorch-cuda"}.get(_device, "pytorch-cpu")
     return JSONResponse({
         "status": "ok",
-        "backend": "pytorch-metal-mps",
+        "backend": backend,
         "device": _device,
         "port": 8001,
     })

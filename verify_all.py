@@ -209,7 +209,7 @@ except Exception as e:
 
 # 10. Document Reader CLI (read_doc.py)
 try:
-    python_bin = str(ODYSSEUS_DIR / ".venv" / "bin" / "python")
+    python_bin = str(ODYSSEUS_DIR / ".venv" / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python"))
     test_pdf = str(SPEACHES_DIR / "test_docs" / "sample.pdf")
     out_mp3 = str(SPEACHES_DIR / "test_docs" / "read_doc_verify.mp3")
 

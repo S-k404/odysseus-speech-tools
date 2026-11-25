@@ -494,17 +494,11 @@ class DocumentNarrator:
 
     @staticmethod
     def play_audio(audio_path: str):
-        """Play audio file using macOS native afplay."""
-        if sys.platform == "darwin":
-            print(f"[Narrator] Playing audio aloud via macOS afplay: {audio_path}")
-            try:
-                subprocess.run(["afplay", audio_path], check=True)
-            except KeyboardInterrupt:
-                print("\n[Narrator] Playback interrupted.")
-            except Exception as e:
-                print(f"[-] Playback error: {e}")
-        else:
-            print(f"[-] Live playback not supported natively on {sys.platform}. Use an audio player to open {audio_path}")
+        """Play audio file using native OS audio playback (macOS afplay, Windows MediaPlayer/ffplay, Linux)."""
+        from audio_player import play_audio_file
+
+        print(f"[Narrator] Playing audio aloud: {audio_path}")
+        play_audio_file(audio_path)
 
 
 # ==============================================================================

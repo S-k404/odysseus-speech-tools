@@ -42,6 +42,13 @@ curl http://localhost:8000/v1/models          # Kokoro-82M and Faster-Whisper sh
 ./narrator.py test_docs/sample.md -o narration.mp3 --play
 ```
 
+On Windows 11 (PowerShell):
+
+```powershell
+.\install.ps1
+.\.venv\Scripts\python.exe .\narrator.py .\test_docs\sample.md -o narration.mp3 --play
+```
+
 If you run the full Odysseus stack, the same `speaches` service is already part of its compose file, so skip the first two commands. That is why this repository's compose file is named `...superseded-by-odysseus`.
 
 ## What's in the box
@@ -69,7 +76,7 @@ The scripts that touch Odysseus (`setup_speaches_odysseus.py`, `apply_audio_conf
 - **Faster-Whisper** (`Systran/faster-whisper-small` by default): fast, memory-efficient local transcription.
 - **OpenAI-compatible API**, so anything that talks to OpenAI's speech endpoints can talk to this.
 - **Odysseus integration** for agent voice replies and speech input.
-- **Document narration** of PDF, Markdown, EPUB and plain text, with a live-playback option on macOS.
+- **Document narration** of PDF, Markdown, EPUB and plain text, with live playback on macOS (`afplay`), Windows 11 (`ffplay` / `MediaPlayer`), and Linux.
 - **Chaptered audiobooks** from PDFs, with headers, footers, page numbers and citations stripped first.
 
 ## Endpoints

@@ -144,7 +144,8 @@ def stop_server_on_exit():
                 _SERVER_PROC.wait(timeout=3)
             except subprocess.TimeoutExpired:
                 _SERVER_PROC.kill()
-        subprocess.run(["pkill", "-f", f"uvicorn server:app.*{KOKORO_PORT}"], capture_output=True)
+        if sys.platform != "win32":
+            subprocess.run(["pkill", "-f", f"uvicorn server:app.*{KOKORO_PORT}"], capture_output=True)
         console.print("[green]✅  Kokoro GPU server stopped cleanly.[/green]")
 
 
